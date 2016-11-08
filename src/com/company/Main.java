@@ -56,4 +56,11 @@ public class Main {
                 .collect(Collectors.toCollection(HashSet::new));
         return suits.size() == 1;
     }
+
+    public static boolean isStraight(HashSet<Card> hand) {
+        HashSet<Card.Rank> ranks = hand.stream()
+                .map(c -> c.rank)
+                .collect(Collectors.toCollection(HashSet::new));
+        return true;
+    }
 }
