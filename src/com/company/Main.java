@@ -1,5 +1,9 @@
 package com.company;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
@@ -45,7 +49,9 @@ public class Main {
         HashSet<Card> deck = createDeck();
         HashSet<HashSet<Card>> hands = createHands(deck);
         hands = hands.stream()
-                .filter(Main::isFlush)
+//                .filter(Main::isFlush)
+//                .filter(Main::isFourOfAKind)
+                .filter(Main::isThreeOfAKind)
                 .collect(Collectors.toCollection(HashSet::new));
         System.out.println(hands.size());
     }
@@ -63,4 +69,26 @@ public class Main {
                 .collect(Collectors.toCollection(HashSet::new));
         return true;
     }
+
+    public static boolean isFourOfAKind(HashSet<Card> hand) {
+        HashSet<Card.Rank> ranks = hand.stream()
+                .map(c -> c.rank)
+                .collect(Collectors.toCollection(HashSet::new));
+        return ranks.size() == 1;
+    }
+
+    public static boolean isThreeOfAKind(HashSet<Card> hand) {
+        ArrayList<Card> hand = new ArrayList<>();
+        for(int i = hand.size(); i > 3; i++) {
+            Card.Rank firstRank = hand.get(i).rank;
+            Card.Rank secondRank = hand.get(i+1).rank;
+            Card.Rank thirdRank = hand.get(i+2).rank;
+            ranks.add(firstRank);
+            ranks.add(secondRank);
+            ranks.add(thirdRank);
+        }
+        return ranks.size() == 3;
+    }
+
+
 }
