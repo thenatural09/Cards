@@ -49,9 +49,10 @@ public class Main {
         HashSet<Card> deck = createDeck();
         HashSet<HashSet<Card>> hands = createHands(deck);
         hands = hands.stream()
+                .filter(Main::isStraight)
 //                .filter(Main::isFlush)
 //                .filter(Main::isFourOfAKind)
-                .filter(Main::isThreeOfAKind)
+//                .filter(Main::isThreeOfAKind)
                 .collect(Collectors.toCollection(HashSet::new));
         System.out.println(hands.size());
     }
@@ -64,10 +65,10 @@ public class Main {
     }
 
     public static boolean isStraight(HashSet<Card> hand) {
-        HashSet<Card.Rank> ranks = hand.stream()
-                .map(c -> c.rank)
-                .collect(Collectors.toCollection(HashSet::new));
-        return true;
+        ArrayList<Integer> ranks = hand.stream().map(card -> card.rank.ordinal()).collect(Collectors.toCollection(ArrayList::new));
+        Collections.sort(ranks);
+        HashSet<Integer> rankSet = new HashSet<>(ranks);
+        return rankSet.size() == 4 && ranks.get(3) - ranks.get(0) == 3;
     }
 
     public static boolean isFourOfAKind(HashSet<Card> hand) {
@@ -78,16 +79,14 @@ public class Main {
     }
 
     public static boolean isThreeOfAKind(HashSet<Card> hand) {
-        ArrayList<Card> hand = new ArrayList<>();
-        for(int i = hand.size(); i > 3; i++) {
-            Card.Rank firstRank = hand.get(i).rank;
-            Card.Rank secondRank = hand.get(i+1).rank;
-            Card.Rank thirdRank = hand.get(i+2).rank;
-            ranks.add(firstRank);
-            ranks.add(secondRank);
-            ranks.add(thirdRank);
+        ArrayList<Card.Rank> ranks = hand.stream().map(card -> card.rank).collect(Collectors.toCollection(ArrayList::new));
+        for(Card.Rank rank : Card.Rank.values()) {
+            int count = Collections.frequency(ranks,rank);
+            if (count == 3) {
+                return true;
+            }
         }
-        return ranks.size() == 3;
+        return false;
     }
 
 
