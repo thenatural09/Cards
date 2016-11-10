@@ -49,10 +49,13 @@ public class Main {
         HashSet<Card> deck = createDeck();
         HashSet<HashSet<Card>> hands = createHands(deck);
         hands = hands.stream()
-                .filter(Main::isStraight)
+//                .filter(Main::isStraight)
 //                .filter(Main::isFlush)
 //                .filter(Main::isFourOfAKind)
 //                .filter(Main::isThreeOfAKind)
+//                .filter(Main::isPair)
+//                .filter(Main::isStraightFlush)
+                .filter(Main::isTwoPair)
                 .collect(Collectors.toCollection(HashSet::new));
         System.out.println(hands.size());
     }
@@ -65,7 +68,9 @@ public class Main {
     }
 
     public static boolean isStraight(HashSet<Card> hand) {
-        ArrayList<Integer> ranks = hand.stream().map(card -> card.rank.ordinal()).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> ranks = hand.stream()
+                .map(card -> card.rank.ordinal())
+                .collect(Collectors.toCollection(ArrayList::new));
         Collections.sort(ranks);
         HashSet<Integer> rankSet = new HashSet<>(ranks);
         return rankSet.size() == 4 && ranks.get(3) - ranks.get(0) == 3;
@@ -79,8 +84,11 @@ public class Main {
     }
 
     public static boolean isThreeOfAKind(HashSet<Card> hand) {
-        ArrayList<Card.Rank> ranks = hand.stream().map(card -> card.rank).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Card.Rank> ranks = hand.stream()
+                .map(card -> card.rank).collect(Collectors
+                .toCollection(ArrayList::new));
         for(Card.Rank rank : Card.Rank.values()) {
+
             int count = Collections.frequency(ranks,rank);
             if (count == 3) {
                 return true;
@@ -89,5 +97,35 @@ public class Main {
         return false;
     }
 
+    public static boolean isPair(HashSet<Card> hand) {
+        ArrayList<Card.Rank> ranks = hand.stream()
+                .map(c -> c.rank)
+                .collect(Collectors.toCollection(ArrayList::new));
+        for(Card.Rank rank : Card.Rank.values()) {
+            HashSet<Card.Rank> rankSet = new HashSet<>(ranks);
+            int count = Collections.frequency(ranks,rank);
+            if (count == 2 && rankSet.size() >= 3) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public static boolean isStraightFlush(HashSet<Card> hand) {
+        return isStraight(hand) && isFlush(hand);
+    }
+
+    public static boolean isTwoPair(HashSet<Card> hand) {
+        ArrayList<Card.Rank> ranks = hand.stream()
+                .map(c -> c.rank)
+                .collect(Collectors.toCollection(ArrayList::new));
+        for(Card.Rank rank : Card.Rank.values()) {
+            HashSet<Card.Rank> rankSet = new HashSet<>(ranks);
+            int count = Collections.frequency(ranks,rank);
+            if (count == 2 && rankSet.size() == 2) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
